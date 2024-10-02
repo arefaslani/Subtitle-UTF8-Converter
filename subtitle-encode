@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Check if at least one file was provided
+if [ "$#" -eq 0 ]; then
+    echo "Usage: Drag and drop subtitle files onto this script."
+    exit 1
+fi
+
+# Function to determine encoding
+get_encoding() {
+    local file="$1"
+    
+    # Try to get encoding from file command
+    local file_encoding=$(file -bi "$file" | sed -e 's/.*charset=//')
+    
+    # Default to ISO-8859-1 if encoding is not detected
+    if [ -z "$file_encoding" ]; then
+        file_encoding="ISO-8859-1"
+    fi
+    
+    # Normalize encoding names
+    case "$file_encoding" in
+	"regular file") file_encoding="WINDOWS-1256" ;;
+        "latin1") file_encoding="ISO-8859-1" ;;
+        "ascii") file_encoding="US-ASCII" ;;
+        "utf-16le") file_encoding="UTF-16LE" ;;
+        "utf-16be") file_encoding="UTF-16BE" ;;
+        "utf-32le") file_encoding="UTF-32LE" ;;
+        "utf-32be") file_encoding="UTF-32BE" ;;
+    esac
+    
+    echo "$file_encoding"
+}
+
+# Iterate over each file provided
+for file in "$@"; do
+    # Check if the file exists
+    if [ ! -f "$file" ]; then
+        echo "File '$file' does not exist."
+        continue
+    fi
+
+    # Get the file extension and check if it is a subtitle file
+    extension="${file##*.}"
+    if [[ "$extension" != "srt" && "$extension" != "SRT" && "$extension" != "sub" && "$extension" != "SUB"  && "$extension" != "ass" && "$extension" != "ASS" ]]; then
+        echo "File '$file' is not a recognized subtitle format (srt, sub, ass)."
+        continue
+    fi
+
+    # Detect the file encoding
+    file_encoding=$(get_encoding "$file")
+
+    # Convert the file to UTF-8 encoding and write it to a new file
+    if [ "$file_encoding" = "UTF-8" ]; then
+        echo "File '$file' is already in UTF-8 encoding."
+        continue
+    fi
+
+    # Check if iconv is available
+    if ! command -v iconv &> /dev/null; then
+        echo "iconv command not found. Please install it to use this script."
+        exit 1
+    fi
+
+    # Perform conversion
+    iconv -f "$file_encoding" -t UTF-8 "$file" > "${file%.${extension}}_utf8.${extension}"
+done
+
