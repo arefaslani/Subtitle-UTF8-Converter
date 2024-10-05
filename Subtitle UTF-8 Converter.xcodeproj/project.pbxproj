@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		5AF2C1D62CAE15300042D328 /* subtitle-encode in Resources */ = {isa = PBXBuildFile; fileRef = 5AF2C1D52CAE15300042D328 /* subtitle-encode */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		5AF2C1B92CAE0AB00042D328 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -31,7 +27,6 @@
 		5AF2C1A72CAE0AAD0042D328 /* Subtitle UTF-8 Converter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Subtitle UTF-8 Converter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AF2C1B82CAE0AB00042D328 /* Subtitle UTF-8 ConverterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Subtitle UTF-8 ConverterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AF2C1C22CAE0AB00042D328 /* Subtitle UTF-8 ConverterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Subtitle UTF-8 ConverterUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5AF2C1D52CAE15300042D328 /* subtitle-encode */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "subtitle-encode"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -84,7 +79,6 @@
 				5AF2C1BB2CAE0AB00042D328 /* Subtitle UTF-8 ConverterTests */,
 				5AF2C1C52CAE0AB00042D328 /* Subtitle UTF-8 ConverterUITests */,
 				5AF2C1A82CAE0AAD0042D328 /* Products */,
-				5AF2C1D52CAE15300042D328 /* subtitle-encode */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,7 +212,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5AF2C1D62CAE15300042D328 /* subtitle-encode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
