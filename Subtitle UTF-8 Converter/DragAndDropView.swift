@@ -15,25 +15,18 @@ struct DragAndDropView: View {
     
     var body: some View {
         VStack {
-            Text(dropInfo)
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.clear)
-                .border(Color.clear, width: 5) // Clear border for the frame
-            
-            // Create the drop area
             RoundedRectangle(cornerRadius: 20)
                 .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [5]))
                 .frame(width: 300, height: 200)
                 .background(Color.clear)
                 .overlay(
-                    Text("Drag & Drop Here")
+                    Text(dropInfo)
                         .font(.headline)
                 )
                 .onDrop(of: [(UTType.fileURL)], delegate: DropViewDelegate(dropInfo: $dropInfo, showAlert: $showAlert, alertMessage: $alertMessage)) // Allow both types
                 .padding()
                 .alert(isPresented: $showAlert) {
-                    Alert(title: Text(""), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                    Alert(title: Text(appName), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
         }
     }

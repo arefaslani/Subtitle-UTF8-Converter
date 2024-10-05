@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let appName = "Subtitle UTF-8 Converter"
+
 struct ContentView: View {
     var body: some View {
         VStack {
