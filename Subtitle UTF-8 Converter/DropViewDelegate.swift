@@ -10,6 +10,8 @@ import UniformTypeIdentifiers
 
 struct DropViewDelegate: DropDelegate {
     @Binding var dropInfo: String
+    @Binding var showAlert: Bool
+    @Binding var alertMessage: String
     
     func validateDrop(info: DropInfo) -> Bool {
         return info.hasItemsConforming(to: ["public.file-url"]) // Check both types
@@ -29,7 +31,8 @@ struct DropViewDelegate: DropDelegate {
             itemProvider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { (item, error) in
                 DispatchQueue.main.async {
                     if let error = error {
-                        dropInfo = "Error: \(error.localizedDescription)"
+                        alertMessage = "Error: \(error.localizedDescription)"
+                        showAlert = true
                         return
                     }
                     
@@ -39,7 +42,8 @@ struct DropViewDelegate: DropDelegate {
                             dropInfo = "File encoding is being processed..."
                             writeUTFEncoded(to: url)
                         } else {
-                            dropInfo = "Dropped file is not an SRT file."
+                            alertMessage = "Dropped file is not an SRT file."
+                            showAlert = true
                         }
                         
                     }
@@ -49,19 +53,23 @@ struct DropViewDelegate: DropDelegate {
                             dropInfo = "File encoding is being processed..."
                             writeUTFEncoded(to: url)
                         } else {
-                            dropInfo = "Dropped file is not an SRT file."
+                            alertMessage = "Dropped file is not an SRT file."
+                            showAlert = true
                         }
                     } else if let data = item {
-                        dropInfo = "Dropped item is not a URL. Type: \(type(of: data))"
+                        alertMessage = "Dropped item is not a URL. Type: \(type(of: data))"
+                        showAlert = true
                     } else {
-                        dropInfo = "No valid item received"
+                        alertMessage = "No valid item received"
+                        showAlert = true
                     }
                 }
             }
             return true
         }
         
-        dropInfo = "No valid file dropped"
+        alertMessage = "No valid file dropped"
+        showAlert = true
         return false
     }
     
@@ -72,14 +80,26 @@ struct DropViewDelegate: DropDelegate {
             let usedEncoding: String.Encoding = .utf8
             if let _ = String(data: data, encoding: usedEncoding) {
                 if usedEncoding == .utf8 {
+                    alertMessage = "File is already UTF-8 encoded."
+                    showAlert = true
                     return
                 }
             }
             let stringContents = Windows1256.convert(data)
+            
+            guard !stringContents.isEmpty else {
+                alertMessage = "Failed to convert file content."
+                showAlert = true
+                return
+            }
+            
             try stringContents.write(to: url, atomically: true, encoding: .utf8)
+            alertMessage = "File successfully converted and saved."
+            showAlert = true
         }
         catch {
-            print("ERROR")
+            alertMessage = "Error during file conversion: \(error.localizedDescription)"
+            showAlert = true
         }
     }
 }

@@ -10,6 +10,8 @@ import UniformTypeIdentifiers
 
 struct DragAndDropView: View {
     @State private var dropInfo: String = "Drag and drop files here"
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
     var body: some View {
         VStack {
@@ -28,8 +30,11 @@ struct DragAndDropView: View {
                     Text("Drag & Drop Here")
                         .font(.headline)
                 )
-                .onDrop(of: [(UTType.fileURL)], delegate: DropViewDelegate(dropInfo: $dropInfo)) // Allow both types
+                .onDrop(of: [(UTType.fileURL)], delegate: DropViewDelegate(dropInfo: $dropInfo, showAlert: $showAlert, alertMessage: $alertMessage)) // Allow both types
                 .padding()
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text(""), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                }
         }
     }
 }
