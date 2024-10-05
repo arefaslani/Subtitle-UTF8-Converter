@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import AppKit
 
 struct DropViewDelegate: DropDelegate {
     @Binding var dropInfo: String
@@ -93,9 +94,31 @@ struct DropViewDelegate: DropDelegate {
                 return
             }
             
-            try stringContents.write(to: url, atomically: true, encoding: .utf8)
-            alertMessage = "File successfully converted and saved."
-            showAlert = true
+            // Show the save dialog to the user before overwriting the file
+            let savePanel = NSSavePanel()
+            savePanel.directoryURL = url.deletingLastPathComponent() // Set the default directory to the current file location
+            savePanel.nameFieldStringValue = url.lastPathComponent    // Default file name
+            savePanel.prompt = "Save"
+            
+            // Define a custom UTType for .srt
+            let srtUTType = UTType(filenameExtension: "srt") ?? UTType.plainText
+            savePanel.allowedContentTypes = [srtUTType]
+            
+            DispatchQueue.main.async {
+                savePanel.begin { response in
+                    if response == .OK, let saveUrl = savePanel.url {
+                        do {
+                            try stringContents.write(to: saveUrl, atomically: true, encoding: .utf8)
+                            alertMessage = "File successfully converted and saved."
+                            showAlert = true
+                        }
+                        catch {
+                            alertMessage = "Error during file conversion: \(error.localizedDescription)"
+                            showAlert = true
+                        }
+                    }
+                }
+            }
         }
         catch {
             alertMessage = "Error during file conversion: \(error.localizedDescription)"
